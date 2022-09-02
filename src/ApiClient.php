@@ -7,10 +7,10 @@ namespace Vlsv\SberPayQrApiClient;
 use DateTimeImmutable;
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
-use Throwable;
 use Vlsv\SberPayQrApiClient\Exception\ApiException;
 use Vlsv\SberPayQrApiClient\Model\RequestCreation;
 use Vlsv\SberPayQrApiClient\Model\ResponseCreation;
@@ -31,7 +31,9 @@ class ApiClient
      * инициации других операций с заказом), ссылку для генерации QR кода.
      * Scope: order.create
      *
-     * @see https://api.developer.sber.ru/product/PlatiQR/doc/v1/8024874223
+     * @see            https://api.developer.sber.ru/product/PlatiQR/doc/v1/8024874223
+     * @psalm-suppress InvalidReturnType
+     *
      * @throws Exception
      */
     public function creation(
@@ -57,11 +59,14 @@ class ApiClient
 
         try {
             $response = $this->client->send($request, $requestOptions);
-        } catch (Throwable $exception) {
-            $this->exceptionGuard($exception);
-        }
 
-        if ($response->getStatusCode() === 200) {
+            if ($response->getStatusCode() !== 200) {
+                throw new ApiException(
+                    '[' . $response->getStatusCode() . '] ' . 'Unknown response',
+                    $response->getStatusCode(),
+                );
+            }
+
             /** @var ResponseCreation $requestCreation */
             $requestCreation = $this->serializer->deserialize(
                 data: $response->getBody()->getContents(),
@@ -70,12 +75,9 @@ class ApiClient
             );
 
             return $requestCreation;
+        } catch (GuzzleException $exception) {
+            $this->exceptionGuard($exception);
         }
-
-        throw new ApiException(
-            '[' . $response->getStatusCode() . '] ' . 'Unknown response',
-            $response->getStatusCode(),
-        );
     }
 
     /**
@@ -89,11 +91,12 @@ class ApiClient
     /**
      * @throws ApiException
      */
-    private function exceptionGuard(Throwable|Exception $exception): void
+    private function exceptionGuard(GuzzleException $exception): void
     {
         throw new ApiException(
             '[' . $exception->getCode() . '] ' . $exception->getMessage(),
-            (int)$exception->getCode(),
+            $exception->getCode(),
+            $exception,
         );
     }
 }

@@ -44,7 +44,6 @@ class SerializerFactory
                     ]
                 ),
             ),
-
         ];
         $encoders = [new JsonEncoder()];
 
