@@ -25,7 +25,7 @@ class ApiClientTest extends TestCaseBase
             ->setPositionSum(190000);
 
         $requestCreation = (new RequestCreation())
-            ->setMemberId('skazka')
+            ->setMemberId('some_member_id')
             ->setOrderCreateDate(new DateTimeImmutable())
             ->setOrderParamsType([$orderParamsType]);
 
