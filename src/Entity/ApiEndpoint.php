@@ -59,7 +59,7 @@ enum ApiEndpoint: string
             'creation' => ResponseCreation::class,
             'status' => ResponseStatus::class,
             'revocation' => ResponseRevoke::class,
-            'cancel' => 'ResponseCancel::class',
+            'cancel' => ResponseCancel::class,
             'registry' => ResponseRegistry::class,
         };
     }
