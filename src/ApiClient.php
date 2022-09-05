@@ -9,6 +9,7 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 use Vlsv\SberPayQrApiClient\Exception\ApiException;
@@ -31,8 +32,7 @@ class ApiClient
      * инициации других операций с заказом), ссылку для генерации QR кода.
      * Scope: order.create
      *
-     * @see            https://api.developer.sber.ru/product/PlatiQR/doc/v1/8024874223
-     * @psalm-suppress InvalidReturnType
+     * @see https://api.developer.sber.ru/product/PlatiQR/doc/v1/8024874223
      *
      * @throws Exception
      */
@@ -42,7 +42,7 @@ class ApiClient
         string $rqUID = '',
     ): ResponseCreation {
         $requestCreation = $requestCreation
-            ->setRqUid($rqUID ?: self::getRqUID())
+            ->setRqUid($rqUID ?: $this->getRqUID())
             ->setRqTm(new DateTimeImmutable());
 
         $request = new Request('POST', $this->config->getHost() . '/creation');
@@ -57,27 +57,16 @@ class ApiClient
             'body' => $this->serializer->serialize($requestCreation, JsonEncoder::FORMAT),
         ];
 
-        try {
-            $response = $this->client->send($request, $requestOptions);
+        $response = $this->makeRequest($request, $requestOptions);
 
-            if ($response->getStatusCode() !== 200) {
-                throw new ApiException(
-                    '[' . $response->getStatusCode() . '] ' . 'Unknown response',
-                    $response->getStatusCode(),
-                );
-            }
+        /** @var ResponseCreation $requestCreation */
+        $requestCreation = $this->serializer->deserialize(
+            data: $response->getBody()->getContents(),
+            type: ResponseCreation::class,
+            format: JsonEncoder::FORMAT
+        );
 
-            /** @var ResponseCreation $requestCreation */
-            $requestCreation = $this->serializer->deserialize(
-                data: $response->getBody()->getContents(),
-                type: ResponseCreation::class,
-                format: JsonEncoder::FORMAT
-            );
-
-            return $requestCreation;
-        } catch (GuzzleException $exception) {
-            $this->exceptionGuard($exception);
-        }
+        return $requestCreation;
     }
 
     /**
@@ -91,12 +80,25 @@ class ApiClient
     /**
      * @throws ApiException
      */
-    private function exceptionGuard(GuzzleException $exception): void
+    public function makeRequest(Request $request, array $requestOptions): ResponseInterface
     {
-        throw new ApiException(
-            '[' . $exception->getCode() . '] ' . $exception->getMessage(),
-            $exception->getCode(),
-            $exception,
-        );
+        try {
+            $response = $this->client->send($request, $requestOptions);
+        } catch (GuzzleException $exception) {
+            throw new ApiException(
+                '[' . $exception->getCode() . '] ' . $exception->getMessage(),
+                $exception->getCode(),
+                $exception,
+            );
+        }
+
+        if ($response->getStatusCode() !== 200) {
+            throw new ApiException(
+                '[' . $response->getStatusCode() . '] ' . 'Unknown response',
+                $response->getStatusCode(),
+            );
+        }
+
+        return $response;
     }
 }
