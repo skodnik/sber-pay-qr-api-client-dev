@@ -43,7 +43,7 @@ class ApiClient
         RequestCreation $requestCreation,
         string $rqUID = '',
     ): ResponseCreation {
-        $requestCreation = $requestCreation
+        $requestCreation
             ->setRqUid($rqUID ?: $this->getRqUID())
             ->setRqTm(new DateTimeImmutable());
 
@@ -118,14 +118,6 @@ class ApiClient
     }
 
     /**
-     * @throws Exception
-     */
-    public function getRqUID(): string
-    {
-        return bin2hex(random_bytes(16));
-    }
-
-    /**
      * @throws ApiException
      */
     private function makeRequest(Request $request, array $requestOptions): ResponseInterface
@@ -148,5 +140,13 @@ class ApiClient
         }
 
         return $response;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getRqUID(): string
+    {
+        return bin2hex(random_bytes(16));
     }
 }
