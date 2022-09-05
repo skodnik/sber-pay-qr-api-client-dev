@@ -7,7 +7,7 @@ namespace Vlsv\SberPayQrApiClient\Model;
 use DateTimeImmutable;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
-class RequestRegistry
+class RequestRegistry implements RequestInterface
 {
     /**
      * Уникальный идентификатор запроса.

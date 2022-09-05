@@ -14,6 +14,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 use Vlsv\SberPayQrApiClient\Exception\ApiException;
 use Vlsv\SberPayQrApiClient\Model\RequestCreation;
+use Vlsv\SberPayQrApiClient\Model\RequestInterface;
 use Vlsv\SberPayQrApiClient\Model\RequestStatus;
 use Vlsv\SberPayQrApiClient\Model\ResponseCreation;
 use Vlsv\SberPayQrApiClient\Model\ResponseStatus;
@@ -47,21 +48,10 @@ class ApiClient
             ->setRqUid($rqUID ?: $this->getRqUID())
             ->setRqTm(new DateTimeImmutable());
 
-        $request = new Request('POST', $this->config->getHost() . '/creation');
-
-        $requestOptions = [
-            'headers' => [
-                'Authorization' => $accessToken,
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-                'RqUID' => $requestCreation->getRqUid(),
-            ],
-            'body' => $this->serializer->serialize($requestCreation, JsonEncoder::FORMAT),
-        ];
-
         $response = $this->makeRequest(
-            request: $request,
-            requestOptions: $requestOptions
+            accessToken: $accessToken,
+            resourcePath: '/creation',
+            requestObject: $requestCreation,
         );
 
         /** @var ResponseCreation $requestCreation */
@@ -90,21 +80,10 @@ class ApiClient
             ->setRqUid($rqUID ?: $this->getRqUID())
             ->setRqTm(new DateTimeImmutable());
 
-        $request = new Request('POST', $this->config->getHost() . '/status');
-
-        $requestOptions = [
-            'headers' => [
-                'Authorization' => $accessToken,
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-                'RqUID' => $requestStatus->getRqUid(),
-            ],
-            'body' => $this->serializer->serialize($requestStatus, JsonEncoder::FORMAT),
-        ];
-
         $response = $this->makeRequest(
-            request: $request,
-            requestOptions: $requestOptions
+            accessToken: $accessToken,
+            resourcePath: '/status',
+            requestObject: $requestStatus,
         );
 
         /** @var ResponseStatus $responseStatus */
@@ -120,8 +99,25 @@ class ApiClient
     /**
      * @throws ApiException
      */
-    private function makeRequest(Request $request, array $requestOptions): ResponseInterface
-    {
+    private function makeRequest(
+        string $accessToken,
+        string $resourcePath,
+        RequestInterface $requestObject,
+    ): ResponseInterface {
+        $request = new Request('POST', $this->config->getHost() . $resourcePath);
+        $requestOptions = [
+            'headers' => [
+                'Authorization' => $accessToken,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+                'RqUID' => $requestObject->getRqUid(),
+            ],
+            'body' => $this->serializer->serialize(
+                data: $requestObject,
+                format: JsonEncoder::FORMAT,
+            ),
+        ];
+
         try {
             $response = $this->client->send($request, $requestOptions);
         } catch (GuzzleException $exception) {
