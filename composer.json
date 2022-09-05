@@ -50,6 +50,7 @@
     "csfix-fix": "./vendor/bin/php-cs-fixer fix --verbose",
     "lint": "./vendor/bin/phplint --verbose",
     "lint-and-csfix": "./vendor/bin/phplint --verbose && ./vendor/bin/php-cs-fixer fix --dry-run --verbose",
-    "psalm": "./vendor/bin/psalm --show-info=true"
+    "psalm": "./vendor/bin/psalm --show-info=true",
+    "psalm-no-cache": "./vendor/bin/psalm --no-cache --show-info=true"
   }
 }
