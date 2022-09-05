@@ -80,7 +80,7 @@ class ApiClient
     /**
      * @throws ApiException
      */
-    public function makeRequest(Request $request, array $requestOptions): ResponseInterface
+    private function makeRequest(Request $request, array $requestOptions): ResponseInterface
     {
         try {
             $response = $this->client->send($request, $requestOptions);
