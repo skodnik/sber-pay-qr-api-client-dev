@@ -57,7 +57,10 @@ class ApiClient
             'body' => $this->serializer->serialize($requestCreation, JsonEncoder::FORMAT),
         ];
 
-        $response = $this->makeRequest($request, $requestOptions);
+        $response = $this->makeRequest(
+            request: $request,
+            requestOptions: $requestOptions
+        );
 
         /** @var ResponseCreation $requestCreation */
         $requestCreation = $this->serializer->deserialize(
