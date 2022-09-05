@@ -14,7 +14,9 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 use Vlsv\SberPayQrApiClient\Exception\ApiException;
 use Vlsv\SberPayQrApiClient\Model\RequestCreation;
+use Vlsv\SberPayQrApiClient\Model\RequestStatus;
 use Vlsv\SberPayQrApiClient\Model\ResponseCreation;
+use Vlsv\SberPayQrApiClient\Model\ResponseStatus;
 
 class ApiClient
 {
@@ -70,6 +72,49 @@ class ApiClient
         );
 
         return $requestCreation;
+    }
+
+    /**
+     * Запрос статуса заказа.
+     * Клиент запрашивает информацию по ранее созданному заказу по Уникальному идентификатору запроса (ранее
+     * сформированному в АС Сбербанка) и по номеру заказа в CRM Клиента.
+     * В ответ получает данные по заказу с детализацией по финансовым операциям.
+     * @throws ApiException
+     */
+    public function status(
+        string $accessToken,
+        RequestStatus $requestStatus,
+        string $rqUID = '',
+    ): ResponseStatus {
+        $requestStatus
+            ->setRqUid($rqUID ?: $this->getRqUID())
+            ->setRqTm(new DateTimeImmutable());
+
+        $request = new Request('POST', $this->config->getHost() . '/status');
+
+        $requestOptions = [
+            'headers' => [
+                'Authorization' => $accessToken,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+                'RqUID' => $requestStatus->getRqUid(),
+            ],
+            'body' => $this->serializer->serialize($requestStatus, JsonEncoder::FORMAT),
+        ];
+
+        $response = $this->makeRequest(
+            request: $request,
+            requestOptions: $requestOptions
+        );
+
+        /** @var ResponseStatus $responseStatus */
+        $responseStatus = $this->serializer->deserialize(
+            data: $response->getBody()->getContents(),
+            type: ResponseStatus::class,
+            format: JsonEncoder::FORMAT
+        );
+
+        return $responseStatus;
     }
 
     /**

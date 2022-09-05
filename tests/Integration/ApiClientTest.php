@@ -9,6 +9,7 @@ use Exception;
 use Vlsv\SberPayQrApiClient\Exception\ApiException;
 use Vlsv\SberPayQrApiClient\Model\RequestCreation;
 use Vlsv\SberPayQrApiClient\Model\RequestCreationOrderParamsType;
+use Vlsv\SberPayQrApiClient\Model\RequestStatus;
 use Vlsv\SberPayQrApiClient\Tests\TestCaseBase;
 
 class ApiClientTest extends TestCaseBase
@@ -33,6 +34,27 @@ class ApiClientTest extends TestCaseBase
             $this->apiClient->creation(
                 accessToken: 'order.create',
                 requestCreation: $requestCreation
+            );
+
+            self::fail();
+        } catch (ApiException $exception) {
+            self::assertEquals(403, $exception->getCode());
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function test_statusCatchApiException()
+    {
+        $requestStatus = (new RequestStatus())
+            ->setOrderId('5cf8cb8b-37e3-42e9-8f69-306fa72e106f')
+            ->setTid('83457dda-332c-46f4-b928-8d4bd9ee3afe');
+
+        try {
+            $this->apiClient->status(
+                accessToken: 'order.status',
+                requestStatus: $requestStatus
             );
 
             self::fail();
