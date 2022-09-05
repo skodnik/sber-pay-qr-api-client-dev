@@ -27,6 +27,7 @@ class ApiClient
 
     /**
      * @throws ApiException
+     * @throws Exception
      */
     public function makeRequest(
         string $accessToken,
