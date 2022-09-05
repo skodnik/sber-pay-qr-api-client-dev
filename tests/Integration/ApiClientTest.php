@@ -7,6 +7,7 @@ namespace Vlsv\SberPayQrApiClient\Tests\Integration;
 use DateTimeImmutable;
 use Exception;
 use Vlsv\SberPayQrApiClient\Exception\ApiException;
+use Vlsv\SberPayQrApiClient\Model\ApiEndpoint;
 use Vlsv\SberPayQrApiClient\Model\RequestCreation;
 use Vlsv\SberPayQrApiClient\Model\RequestCreationOrderParamsType;
 use Vlsv\SberPayQrApiClient\Model\RequestStatus;
@@ -31,9 +32,10 @@ class ApiClientTest extends TestCaseBase
             ->setOrderParamsType([$orderParamsType]);
 
         try {
-            $this->apiClient->creation(
+            $this->apiClient->makeRequest(
                 accessToken: 'order.create',
-                requestCreation: $requestCreation
+                apiEndpoint: ApiEndpoint::CREATION,
+                requestObject: $requestCreation,
             );
 
             self::fail();
@@ -52,9 +54,10 @@ class ApiClientTest extends TestCaseBase
             ->setTid('83457dda-332c-46f4-b928-8d4bd9ee3afe');
 
         try {
-            $this->apiClient->status(
+            $this->apiClient->makeRequest(
                 accessToken: 'order.status',
-                requestStatus: $requestStatus
+                apiEndpoint: ApiEndpoint::STATUS,
+                requestObject: $requestStatus,
             );
 
             self::fail();

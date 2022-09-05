@@ -4,13 +4,13 @@ namespace Vlsv\SberPayQrApiClient\Model;
 
 use DateTimeImmutable;
 
-interface RequestInterface
+interface ResponseInterface
 {
     public function getRqUid(): string;
 
-    public function setRqUid(string $rqUid): RequestInterface;
+    public function setRqUid(string $rqUid): ResponseInterface;
 
     public function getRqTm(): DateTimeImmutable;
 
-    public function setRqTm(DateTimeImmutable $rqTm): RequestInterface;
+    public function setRqTm(DateTimeImmutable $rqTm): ResponseInterface;
 }

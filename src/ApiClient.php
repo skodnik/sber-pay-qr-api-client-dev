@@ -9,15 +9,12 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
-use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 use Vlsv\SberPayQrApiClient\Exception\ApiException;
-use Vlsv\SberPayQrApiClient\Model\RequestCreation;
+use Vlsv\SberPayQrApiClient\Model\ApiEndpoint;
 use Vlsv\SberPayQrApiClient\Model\RequestInterface;
-use Vlsv\SberPayQrApiClient\Model\RequestStatus;
-use Vlsv\SberPayQrApiClient\Model\ResponseCreation;
-use Vlsv\SberPayQrApiClient\Model\ResponseStatus;
+use Vlsv\SberPayQrApiClient\Model\ResponseInterface;
 
 class ApiClient
 {
@@ -29,82 +26,19 @@ class ApiClient
     }
 
     /**
-     * Создание заказа.
-     * Клиент направляет запрос на формирование заказа в АС Сбербанка.
-     * В ответ получает присвоенный Идентификатор заказа в АС Сбербанк (впоследствии используется в качестве ключа для
-     * инициации других операций с заказом), ссылку для генерации QR кода.
-     * Scope: order.create
-     *
-     * @see https://api.developer.sber.ru/product/PlatiQR/doc/v1/8024874223
-     *
-     * @throws Exception
-     */
-    public function creation(
-        string $accessToken,
-        RequestCreation $requestCreation,
-        string $rqUID = '',
-    ): ResponseCreation {
-        $requestCreation
-            ->setRqUid($rqUID ?: $this->getRqUID())
-            ->setRqTm(new DateTimeImmutable());
-
-        $response = $this->makeRequest(
-            accessToken: $accessToken,
-            resourcePath: '/creation',
-            requestObject: $requestCreation,
-        );
-
-        /** @var ResponseCreation $requestCreation */
-        $requestCreation = $this->serializer->deserialize(
-            data: $response->getBody()->getContents(),
-            type: ResponseCreation::class,
-            format: JsonEncoder::FORMAT
-        );
-
-        return $requestCreation;
-    }
-
-    /**
-     * Запрос статуса заказа.
-     * Клиент запрашивает информацию по ранее созданному заказу по Уникальному идентификатору запроса (ранее
-     * сформированному в АС Сбербанка) и по номеру заказа в CRM Клиента.
-     * В ответ получает данные по заказу с детализацией по финансовым операциям.
      * @throws ApiException
      */
-    public function status(
+    public function makeRequest(
         string $accessToken,
-        RequestStatus $requestStatus,
-        string $rqUID = '',
-    ): ResponseStatus {
-        $requestStatus
-            ->setRqUid($rqUID ?: $this->getRqUID())
-            ->setRqTm(new DateTimeImmutable());
-
-        $response = $this->makeRequest(
-            accessToken: $accessToken,
-            resourcePath: '/status',
-            requestObject: $requestStatus,
-        );
-
-        /** @var ResponseStatus $responseStatus */
-        $responseStatus = $this->serializer->deserialize(
-            data: $response->getBody()->getContents(),
-            type: ResponseStatus::class,
-            format: JsonEncoder::FORMAT
-        );
-
-        return $responseStatus;
-    }
-
-    /**
-     * @throws ApiException
-     */
-    private function makeRequest(
-        string $accessToken,
-        string $resourcePath,
+        ApiEndpoint $apiEndpoint,
         RequestInterface $requestObject,
+        string $rqUID = '',
     ): ResponseInterface {
-        $request = new Request('POST', $this->config->getHost() . $resourcePath);
+        $requestObject
+            ->setRqUid($rqUID ?: $this->getRqUID())
+            ->setRqTm(new DateTimeImmutable());
+
+        $request = new Request('POST', $this->config->getHost() . $apiEndpoint->getResourcePath());
         $requestOptions = [
             'headers' => [
                 'Authorization' => $accessToken,
@@ -135,7 +69,14 @@ class ApiClient
             );
         }
 
-        return $response;
+        /** @var ResponseInterface $responseObject */
+        $responseObject =  $this->serializer->deserialize(
+            data: $response->getBody()->getContents(),
+            type: $apiEndpoint->getResponseClassName(),
+            format: JsonEncoder::FORMAT
+        );
+
+        return $responseObject;
     }
 
     /**
