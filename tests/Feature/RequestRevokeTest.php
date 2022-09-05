@@ -6,7 +6,7 @@ namespace Vlsv\SberPayQrApiClient\Tests\Feature;
 
 use DateTimeImmutable;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Vlsv\SberPayQrApiClient\Model\RequestRevoke;
+use Vlsv\SberPayQrApiClient\Entity\RequestRevoke;
 use Vlsv\SberPayQrApiClient\Tests\TestCaseBase;
 
 class RequestRevokeTest extends TestCaseBase

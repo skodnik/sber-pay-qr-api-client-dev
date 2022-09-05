@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Vlsv\SberPayQrApiClient\Tests\Feature;
 
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Vlsv\SberPayQrApiClient\Model\RequestCreation;
-use Vlsv\SberPayQrApiClient\Model\RequestStatus;
+use Vlsv\SberPayQrApiClient\Entity\RequestCreation;
+use Vlsv\SberPayQrApiClient\Entity\RequestStatus;
 use Vlsv\SberPayQrApiClient\Tests\TestCaseBase;
 
 class RequestStatusTest extends TestCaseBase

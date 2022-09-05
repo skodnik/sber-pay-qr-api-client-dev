@@ -1,6 +1,6 @@
 <?php
 
-namespace Vlsv\SberPayQrApiClient\Model;
+namespace Vlsv\SberPayQrApiClient\Entity;
 
 use DateTimeImmutable;
 

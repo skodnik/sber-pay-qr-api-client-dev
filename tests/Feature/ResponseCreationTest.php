@@ -6,8 +6,8 @@ namespace Vlsv\SberPayQrApiClient\Tests\Feature;
 
 use DateTimeImmutable;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Vlsv\SberPayQrApiClient\Model\RequestCreation;
-use Vlsv\SberPayQrApiClient\Model\ResponseCreation;
+use Vlsv\SberPayQrApiClient\Entity\RequestCreation;
+use Vlsv\SberPayQrApiClient\Entity\ResponseCreation;
 use Vlsv\SberPayQrApiClient\Tests\TestCaseBase;
 
 class ResponseCreationTest extends TestCaseBase

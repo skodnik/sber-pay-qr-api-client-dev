@@ -6,11 +6,11 @@ namespace Vlsv\SberPayQrApiClient\Tests\Integration;
 
 use DateTimeImmutable;
 use Exception;
+use Vlsv\SberPayQrApiClient\Entity\ApiEndpoint;
+use Vlsv\SberPayQrApiClient\Entity\RequestCreation;
+use Vlsv\SberPayQrApiClient\Entity\RequestCreationOrderParamsType;
+use Vlsv\SberPayQrApiClient\Entity\RequestStatus;
 use Vlsv\SberPayQrApiClient\Exception\ApiException;
-use Vlsv\SberPayQrApiClient\Model\ApiEndpoint;
-use Vlsv\SberPayQrApiClient\Model\RequestCreation;
-use Vlsv\SberPayQrApiClient\Model\RequestCreationOrderParamsType;
-use Vlsv\SberPayQrApiClient\Model\RequestStatus;
 use Vlsv\SberPayQrApiClient\Tests\TestCaseBase;
 
 class ApiClientTest extends TestCaseBase

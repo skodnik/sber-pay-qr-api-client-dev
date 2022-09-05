@@ -6,12 +6,12 @@ namespace Vlsv\SberPayQrApiClient\Tests\Feature;
 
 use DateTimeImmutable;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Vlsv\SberPayQrApiClient\Model\ResponseRegistry;
-use Vlsv\SberPayQrApiClient\Model\ResponseRegistryRegistryData;
-use Vlsv\SberPayQrApiClient\Model\ResponseRegistryRegistryDataOrderParams;
-use Vlsv\SberPayQrApiClient\Model\ResponseRegistryRegistryDataOrderParamsOrderOperationParams;
-use Vlsv\SberPayQrApiClient\Model\ResponseRegistryRegistryDataOrderParamsOrderOperationParamsOrderOperationParam;
-use Vlsv\SberPayQrApiClient\Model\ResponseRegistryRegistryDataOrderParamsOrderParam;
+use Vlsv\SberPayQrApiClient\Entity\ResponseRegistry;
+use Vlsv\SberPayQrApiClient\Entity\ResponseRegistryRegistryData;
+use Vlsv\SberPayQrApiClient\Entity\ResponseRegistryRegistryDataOrderParams;
+use Vlsv\SberPayQrApiClient\Entity\ResponseRegistryRegistryDataOrderParamsOrderOperationParams;
+use Vlsv\SberPayQrApiClient\Entity\ResponseRegistryRegistryDataOrderParamsOrderOperationParamsOrderOperationParam;
+use Vlsv\SberPayQrApiClient\Entity\ResponseRegistryRegistryDataOrderParamsOrderParam;
 use Vlsv\SberPayQrApiClient\Tests\TestCaseBase;
 
 class ResponseRegistryTest extends TestCaseBase

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Vlsv\SberPayQrApiClient\Model;
+namespace Vlsv\SberPayQrApiClient\Entity;
 
 class RequestCreationOrderParamsType
 {

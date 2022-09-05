@@ -11,10 +11,10 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
+use Vlsv\SberPayQrApiClient\Entity\ApiEndpoint;
+use Vlsv\SberPayQrApiClient\Entity\RequestInterface;
+use Vlsv\SberPayQrApiClient\Entity\ResponseInterface;
 use Vlsv\SberPayQrApiClient\Exception\ApiException;
-use Vlsv\SberPayQrApiClient\Model\ApiEndpoint;
-use Vlsv\SberPayQrApiClient\Model\RequestInterface;
-use Vlsv\SberPayQrApiClient\Model\ResponseInterface;
 
 class ApiClient
 {
