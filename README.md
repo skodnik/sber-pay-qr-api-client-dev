@@ -45,7 +45,12 @@ try {
     exit();
 }
 
+// Идентификатор заказа на стороне эквайера.
+// Необходим для дальнейшей работы с API.
 echo $responseCreation->getOrderId();
+
+// Ссылка на форму оплаты - QR-код.
+echo $responseCreation->getOrderFormUrl();
 ```
 Все методы объекта ответа см. [ResponseCreation](src/Entity/ResponseCreation.php)
 
@@ -68,6 +73,7 @@ try {
     exit();
 }
 
+// Состояние заказа на стороне эквайера.
 echo $responseStatus->getOrderState()->value;
 ```
 Все методы объекта ответа см. [ResponseStatus](src/Entity/ResponseStatus.php)
