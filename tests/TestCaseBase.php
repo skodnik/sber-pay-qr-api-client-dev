@@ -22,7 +22,11 @@ class TestCaseBase extends TestCase
 
         $this->serializer = SerializerFactory::getSerializer();
 
-        $config = new ClientConfig();
+        $config = new ClientConfig(
+            certPath: getenv('CERT_PATH'),
+            certPassword: getenv('CERT_PASSWORD'),
+            host: getenv('HOST')
+        );
         $this->apiClient = new ApiClient(
             config: $config,
             serializer: $this->serializer

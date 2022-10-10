@@ -24,6 +24,11 @@
         </include>
     </coverage>
     <php>
+        <env name="MEMBER_ID" value=""/>
+        <env name="ID_QR" value=""/>
+        <env name="SBP_MEMBER_ID" value=""/>
+        <env name="CERT_PATH" value=""/>
+        <env name="CERT_PASSWORD" value=""/>
         <env name="HOST" value=""/>
     </php>
 </phpunit>

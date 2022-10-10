@@ -42,7 +42,7 @@ class ApiClient
         $request = new Request('POST', $this->config->getHost() . $apiEndpoint->getResourcePath());
         $requestOptions = [
             'headers' => [
-                'Authorization' => $accessToken,
+                'Authorization' => 'Bearer ' . $accessToken,
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
                 'RqUID' => $requestObject->getRqUid(),
@@ -52,6 +52,13 @@ class ApiClient
                 format: JsonEncoder::FORMAT,
             ),
         ];
+
+        if ($this->config->getCertPath()) {
+            $requestOptions['cert'] = [
+                $this->config->getCertPath(),
+                $this->config->getCertPassword(),
+            ];
+        }
 
         try {
             $response = $this->client->send($request, $requestOptions);
